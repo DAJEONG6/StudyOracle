@@ -3,5 +3,5 @@
 
 ```sql
 SELECT ename, job, sal, sal * 12  AS annsal
-    FROM emp
+    FROM empp
     WHERE NOT sal >= 10000;
