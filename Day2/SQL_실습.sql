@@ -72,6 +72,18 @@ SELECT ename, job, sal, sal * 12  AS 연봉
     FROM emp
     WHERE ename LIKE '__RD' ;
 
+-- NULL, 함수형 NVL() 나중에  
+SELECT ename, job, sal, comm
+    FROM emp
+    WHERE comm IS NOT NULL;
+    
+-- 집합(UNION은 관계가 없는 데이터도 합칠 수 있음)
+SELECT empno, ename, job FROM emp ---UNION 기준 테이블
+    WHERE comm IS NOT NULL
+UNION
+SELECT deptno, dname, loc FROM dept;
+
+-- MINUS 차집합, INTERSECT 교집합
 
 
 
