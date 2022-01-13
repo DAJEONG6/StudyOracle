@@ -21,4 +21,4 @@ Oracle 학습 리포지토리
 - 서브쿼리
 - DML(INSERT, UPDATE, DELETE문)
 - SEQUENCE
-- 트랜잭션 (COMMIT, ROLLBACK)
+- 트랜잭션(COMMIT, ROLLBACK)
