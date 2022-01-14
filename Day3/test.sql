@@ -1,4 +1,4 @@
--- 1¹ø.
+-- 1ë²ˆ.
 SELECT Lower(email)email
      , MOBILE
      , names
@@ -7,36 +7,36 @@ SELECT Lower(email)email
   FROM membertbl
   ORDER BY names DESC;
 
--- 2¹ø.
-SELECT names Ã¥Á¦¸ñ
-     , Author ÀúÀÚ¸í
-     , TO_CHAR(releasedate,'yyyy-mm-dd') ÃâÆÇÀÏ
-     , price °¡°İ
+-- 2ë²ˆ.
+SELECT names ì±…ì œëª©
+     , Author ì €ìëª…
+     , TO_CHAR(releasedate,'yyyy-mm-dd') ì¶œíŒì¼
+     , price ê°€ê²©
   FROM BOOKSTBL
   ORDER BY idx;
 
--- 3¹ø.
-SELECT d.names Àå¸£
-     , b.names Ã¥Á¦¸ñ
-     , b.author ÀúÀÚ
-     , TO_CHAR(b.releasedate,'yyyy-mm-dd') ÃâÆÇÀÏ
-     , b.ISBN Ã¥ÄÚµå¹øÈ£
-     , TO_CHAR(b.price, '00000')||'¿ø'  °¡°İ
-     -- CONCAT(b.price, '¿ø') °¡°İ
+-- 3ë²ˆ.
+SELECT d.names ì¥ë¥´
+     , b.names ì±…ì œëª©
+     , b.author ì €ì
+     , TO_CHAR(b.releasedate,'yyyy-mm-dd') ì¶œíŒì¼
+     , b.ISBN ì±…ì½”ë“œë²ˆí˜¸
+     , TO_CHAR(b.price, '00000')||'ì›'  ê°€ê²©
+     -- CONCAT(b.price, 'ì›') ê°€ê²©
   FROM bookstbl b
   INNER JOIN divtbl d
   ON b.division = d.division
   ORDER BY idx desc;
   
--- 4¹ø.
+-- 4ë²ˆ.
 SELECT MEMBER_SEQ.CURRVAL FROM dual;
 
 INSERT INTO membertbl
     (idx, names, levels, addr, mobile, email, userid, password)
     VALUES(MEMBER_SEQ.NEXTVAL
-         , 'È«±æµ¿'
+         , 'í™ê¸¸ë™'
          , 'A'
-         , 'ºÎ»ê½Ã µ¿±¸ ÃÊ·®µ¿'
+         , 'ë¶€ì‚°ì‹œ ë™êµ¬ ì´ˆëŸ‰ë™'
          , '010-7989-0909'
          , 'HGD09@naver.com'
          , 'HGD7989'
@@ -44,9 +44,9 @@ INSERT INTO membertbl
          );
 COMMIT;
 
--- 5¹ø.
-SELECT NVL(d.names, '--ÇÕ°è--') Àå¸£
-     , sum(b.price) Àå¸£º°ÇÕ°è±İ¾×
+-- 5ë²ˆ.
+SELECT NVL(d.names, '--í•©ê³„--') ì¥ë¥´
+     , sum(b.price) ì¥ë¥´ë³„í•©ê³„ê¸ˆì•¡
   FROM bookstbl b
   INNER JOIN divtbl d
   ON b.division = d.division
