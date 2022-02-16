@@ -297,3 +297,197 @@ WHERE mem_id IN(
         )
     )
 ORDER BY mem_regno1 ASC;
+
+
+
+
+-- 2022.2.16
+-- AVG(column) : 조회 범위 내 해당하는 평균값
+-- COUNT(col) : 조회 범위 내 해당 컬럼들의 자료 수
+-- COUNT(*) : 선택된 자료의 수*조회 대상 컬럼에서 null은 대상 외.
+
+-- 구매내역(장바구니)정보에서 회원아이디별로 주문(수량)에 대한 평균 조회
+-- 회원 아이디를 기준으로 내림 차순
+SELECT cart_member, round(avg(cart_qty),2) "avg_qty"
+FROM cart
+GROUP BY cart_member
+ORDER BY cart_member DESC;
+
+-- 상품정보에서 판매가격의 평균 값 구하기
+-- 단, 평균값은 소수점 둘째자리까지 표현
+SELECT round(avg(prod_sale),2) "avg_sale"
+FROM prod;
+
+-- 상품정보에서 상품분류별 판매가격의 평균값
+-- 조회컬럼은 상품분류코드, 상품분류별 판매가격의 평균
+-- 단, 평균값은 소수점 둘째자리까지 표현
+SELECT prod_lgu, round(avg(prod_sale),2) "avg_sale"
+FROM prod
+GROUP BY prod_lgu;
+
+-- 회원테이블의 취미종류수를 COUNT 집계
+SELECT count(mem_like) 취미종류수
+FROM member;
+
+-- 회원테이블의 취미별 COUNT 집계
+SELECT mem_like 취미, COUNT(mem_like) 자료수
+FROM member
+GROUP BY mem_like;
+
+-- 회원테이블의 직업종류수를 COUNT 집계
+SELECT mem_job, count(mem_job) cnt_job
+FROM member
+GROUP BY mem_job
+ORDER BY cnt_job DESC;
+
+
+
+-- 회원 전체의 마일리지 평균보다 큰 회원에 대한
+-- 아이디, 이름, 마일리지를 조회
+-- 정렬은 마일리지가 높은 순
+SELECT mem_id, mem_name, mem_mileage
+FROM member
+WHERE mem_mileage > (
+    SELECT avg(mem_mileage)
+    FROM member)
+ORDER BY mem_mileage DESC;
+
+-- max/min :  조회 범위 내 해당 컬럼 들 중 최대값과 최소값
+
+-- 오늘이 2000년도 7월11월이라 가정하고 장바구니테이블에 발생될 추가주문번호를 검색
+-- Alias는 현재 년월일 기준 가장 높은 주문번호, 추가주문번호
+SELECT *
+FROM cart;
+
+
+SELECT max(cart_no) as "max_cart_no", max(cart_no)+1 as "추가주문번호"
+FROM cart
+WHERE substr(cart_no,1,8)='20050711'; -- cart_no like '20050711%'
+
+
+-- 구매정보에서 연도별로 판매된 상품의 개수, 평균구매수량 조회
+-- 정렬은 연도를 기준으로 내림차순
+SELECT substr(cart_no,1,4) yyyy, sum(cart_qty) sum_qty, avg(cart_qty) avg_qty
+FROM cart
+GROUP BY substr(cart_no,1,4)
+ORDER BY yyyy DESC;
+
+-- 구매정보에서 연도별, 상품분류코드별로 상품의 개수를 조회
+-- 상품개수는 count 사용
+-- 정렬은 연도를 기준으로 내림차순
+SELECT substr(cart_no,1,4) yyyy, substr(cart_prod,1,4) cart_prod, count(cart_prod) count_prod
+FROM cart
+GROUP BY substr(cart_no,1,4), substr(cart_prod,1,4)
+ORDER BY yyyy DESC;
+
+-- SUM : 컬럼 합산
+-- 회원테이블의 회원전체의 마일리지 평균, 마일리지 합계, 최고 마일리지, 최소 마일리지, 인원 수를 검색
+SELECT round(avg(mem_mileage),2) avg_m , 
+        sum(mem_mileage) sum_m, 
+        max(mem_mileage) max_m, 
+        min(mem_mileage) min_m, 
+        count(mem_mileage) cnt_m
+FROM member;
+
+-- 상품테이블에서 상품분류별 판매가 전체의 평균, 합계, 최고값, 최저값, 자료 수를 검색
+SELECT prod_lgu, 
+        round(avg(prod_sale),2) as avg_sale,
+        sum(prod_sale) as sum_sale, 
+        max(prod_sale) as max_sale, 
+        min(prod_sale) as min_sale, 
+        count(prod_sale) as cnt_sale
+FROM prod
+GROUP BY prod_lgu;
+
+-- 자료수가 20개 이상인 것
+SELECT prod_lgu, 
+        round(avg(prod_sale),2) as avg_sale,
+        sum(prod_sale) as sum_sale, 
+        max(prod_sale) as max_sale, 
+        min(prod_sale) as min_sale, 
+        count(prod_sale) as cnt_sale
+FROM prod
+GROUP BY prod_lgu
+having count(prod_sale)>=20;
+
+-- where : 일반조건만 사용
+-- having : 그룹조건만 사용
+
+-- 회원테이블에서 지역(주소1의 2자리), 생일년도별로 마일리지 평균, 마일리지 합계,
+-- 최고마일리지, 최소마일리지, 자료수를 검색
+SELECT  substr(mem_add1,1,2) as mem_add1,
+        to_char(mem_bir,'yyyy') as mem_bir, 
+        avg(mem_mileage) as avg_m, 
+        sum(mem_mileage) as sum_m,
+        max(mem_mileage) as max_m, 
+        min(mem_mileage) as min_m, 
+        count(mem_mileage) as cnt_m
+FROM member
+GROUP BY substr(mem_add1,1,2),to_char(mem_bir,'yyyy');
+
+
+
+-- 함수(NULL): 0과 1같은 특정한 값이 아니고 아무것도 없는 것
+
+-- 거래처 담당자 성씨가 '김'이면 NULL로 갱신
+UPDATE buyer SET buyer_charger=NULL
+WHERE buyer_charger LIKE '김%';
+
+-- 거래처 담당자 성씨가 '성'이면 White Space로 갱신
+UPDATE buyer SET buyer_charger=''
+WHERE buyer_charger LIKE '성%';
+
+-- Oracle은 빈 공백도 NULL로 인식
+-- NVL(c,r) : c가 null이 아니면 c값으로, null이면 r 반환
+-- NVL2(c, r1, rw) : c가 null이 아니면 r1값으로, null이면 r2 반환
+-- NULLIF(c,d) : c와 d를 비교하여 같으면 NULL, 다르면 c값을 돌려줌
+-- COALESCE : 파라미터 중 Null이 아닌 첫번째 파라미터 반환
+
+-- NULL을 이용한 NULL값 비교
+SELECT buyer_name 거래처, buyer_charger 담당자
+FROM buyer
+WHERE buyer_charger = NULL;      -- 값 안나옴
+
+SELECT buyer_name 거래처, buyer_charger 담당자
+FROM buyer
+WHERE buyer_charger IS NULL;
+
+-- NULL이 존재하는 상태로 조회
+SELECT buyer_name 거래처, buyer_charger 담당자
+FROM buyer;
+
+SELECT buyer_name 거래처, NVL(buyer_charger,'없다') 담당자
+FROM buyer;
+
+-- 회원 마일리지에 100을 더한 수치를 검색
+SELECT mem_name, mem_mileage, NVL(mem_mileage+100,100) AS mem_mil
+FROM member;
+
+-- 회원 마일리지가 있으면 '정상회원', null이면 '비정상 회원'으로 검색
+SELECT mem_name, mem_mileage, NVL2(mem_mileage, '정상회원','비정상회원') AS mem_mil
+FROM member;
+
+-- DECODE : IF문과 같은 기능을 함
+-- CASE WHEN : 연속적인 조건 문*표준)
+
+SELECT DECODE(substr(prod_lgu,1,2),
+                     'P1', '컴퓨터/전자제품',
+                     'P2', '의류',
+                     'P3', '잡화','기타') -- '기타'는 else
+FROM prod;
+
+-- 상품 분류 중 앞의 두글자가 'P1'이면 판매가를 10% 인상하고
+-- 'P2' 이면 판매가를 15% 인상하고,
+-- 나머지는 동일판매가로 검색
+SELECT prod_name, prod_sale, DECODE(substr(prod_lgu,1,2),
+                    'P1', prod_sale*1.1,
+                    'P2', prod_sale*1.15, prod_sale) AS re_prod_sale
+FROM prod;
+
+-- CASE
+-- 회원정보테이블의 주민등록 뒷자리(7자리 중 첫째자리)에서 성별을 구분
+SELECT mem_name,
+    mem_regno1 || '-' || mem_regno2 as regno,
+    CASE substr(mem_regno2,1,1) WHEN '1' THEN 'male'
+                                ELSE 'female' END AS GENDER
+FROM member;
