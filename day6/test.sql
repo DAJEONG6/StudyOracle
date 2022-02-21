@@ -59,6 +59,7 @@ buyprod :매입수량이 10개이상
 prod : 6월에 입고한 제품의
 이름,판매가격조회
 */
+
 select prod_name, prod_sale
 from prod
 where prod_id in
@@ -78,7 +79,8 @@ where lprod_nm ='여성캐주얼')and prod_name like '%여름%'
 등록이 2005년 1월 31일(2월달) 이후에 이루어졌고 매입단가가 20만원이 넘는 상품을
 구매한 고객의 마일리지가 2500이상이면 우수회원 아니면 일반회원으로 출력하라
 컬럼 회원이름과 마일리지, 우수 또는 일반회원을 나타내는 컬럼
-*/
+/*
+
 
 SELECT mem_id,mem_mileage,CASE 
           WHEN mem_mileage >= '2500' THEN '우수회원'
@@ -99,3 +101,20 @@ SELECT mem_id,mem_mileage,CASE
                                     )
                         )
                 );
+                
+                
+                
+                
+select prod_name 이름
+, prod_sale 판매가격
+, nvl(prod_mileage,0)+prod_sale as "판매가격+마일리지"
+from prod
+where prod_id in
+(select buy_prod
+from buyprod
+where buy_qty >=30 and
+to_char(buy_date,'mm')='06') and
+prod_lgu in
+(select lprod_gu
+from lprod
+where lprod_nm ='여성캐주얼')and prod_name like '%여름%';

@@ -32,10 +32,3 @@ Oracle 학습 리포지토리
 ### 5일차 학습
 - IN, NOT IN 절
 - ERD 활용 SELECT문
-- LIKE문
-- 형식 변환(TO_CHAR, TO_DATE, TO_NUMBER)
-- GROUP BY
-
-### 6일차 학습
-- 함수(SUM, AVG, COUNT)
-- NULL 처리
